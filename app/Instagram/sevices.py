@@ -112,17 +112,17 @@ from app.utils.instagram_util import create_instagram_media, publish_instagram_m
 #         raise HTTPException(status_code=500, detail=f"Request failed: {str(e)}")
 
 
-def upload_from_computer(image_path: str, caption: str = None):
-    """
-    Upload an image from the computer to Instagram via Cloudinary.
-    :param image_path: Local path of the image.
-    :param caption: Caption for the Instagram post.
-    :return: Published post ID.
-    """
-    image_url = upload_to_cloudinary(image_path)  # Upload image to Cloudinary and get URL
-    media_id = create_instagram_media(image_url, caption)
-    post_id = publish_instagram_media(media_id)
-    return {"message": "Post published successfully", "post_id": post_id}
+# def upload_from_computer(image_path: str, caption: str = None):
+#     """
+#     Upload an image from the computer to Instagram via Cloudinary.
+#     :param image_path: Local path of the image.
+#     :param caption: Caption for the Instagram post.
+#     :return: Published post ID.
+#     """
+#     image_url = upload_to_cloudinary(image_path)  # Upload image to Cloudinary and get URL
+#     media_id = create_instagram_media(image_url, caption)
+#     post_id = publish_instagram_media(media_id)
+#     return {"message": "Post published successfully", "post_id": post_id}
 
 
 # def upload_from_url(image_url: str, caption: str = None):
@@ -151,17 +151,39 @@ async def instagram_posting(media_url: str, caption: str = None, media_type: str
     return {"message": "Post published successfully", "post_id": post_id}
 
 
+# async def instagram_local_posting(media_path: str, caption: str = None, media_type: str = "IMAGE"):
+#     """
+#     Endpoint to post an image or video to Instagram.
+#     :param media_url: Public URL of the media.
+#     :param caption: Caption for the post.
+#     :param media_type: "IMAGE" or "VIDEO".
+#     """
+#     media_url = upload_to_cloudinary(media_path)
+#     media_id = await create_instagram_media(media_url, caption, media_type)
+#     post_id = await publish_instagram_media(media_id)
+#     return {"message": "Post published successfully", "post_id": post_id}
+
+
+
 async def instagram_local_posting(media_path: str, caption: str = None, media_type: str = "IMAGE"):
     """
     Endpoint to post an image or video to Instagram.
-    :param media_url: Public URL of the media.
+    :param media_path: Local path of the media.
     :param caption: Caption for the post.
     :param media_type: "IMAGE" or "VIDEO".
     """
-    media_url = upload_to_cloudinary(media_path)
+    cloudinary_media_type = "image" if media_type.upper() == "IMAGE" else "video"
+    
+    # Upload to Cloudinary with correct media type
+    media_url = upload_to_cloudinary(media_path, cloudinary_media_type)
+    
+    # Process Instagram posting
     media_id = await create_instagram_media(media_url, caption, media_type)
     post_id = await publish_instagram_media(media_id)
+    
     return {"message": "Post published successfully", "post_id": post_id}
+
+
 
 # def create_instagram_media(image_url: str, caption: str = None):
 #     """

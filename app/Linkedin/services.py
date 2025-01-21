@@ -93,3 +93,29 @@ def post_image_to_linkedin(image_urn: str, text: str, author_id: str):
 
     response = requests.post(post_url, headers=headers, json=payload)
     return response.json()
+
+
+
+def post_media_to_linkedin(media_urn: str, text: str, author_id: str, media_type: str):
+    """Post an image or video to LinkedIn."""
+    headers = {"Authorization": f"Bearer {LINKEDIN_ACCESS_TOKEN}", "Content-Type": "application/json"}
+
+    post_url = "https://api.linkedin.com/v2/ugcPosts"
+
+    media_category = "IMAGE" if media_type == "image" else "VIDEO"
+
+    payload = {
+        "author": author_id,
+        "lifecycleState": "PUBLISHED",
+        "specificContent": {
+            "com.linkedin.ugc.ShareContent": {
+                "shareCommentary": {"text": text},
+                "shareMediaCategory": media_category,
+                "media": [{"status": "READY", "media": media_urn}],  
+            }
+        },
+        "visibility": {"com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"},
+    }
+
+    response = requests.post(post_url, headers=headers, json=payload)
+    return response.json()
