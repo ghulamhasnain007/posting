@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, File, UploadFile
-from app.Linkedin.services import linkedin_callback, linkedin_auth, post_image_to_linkedin, post_text_to_linkedin, post_media_to_linkedin
-from app.utils.linkedin_util import upload_local_media, upload_local_image, upload_media
+from app.Linkedin.services import linkedin_callback, linkedin_auth, post_text_to_linkedin, post_media_to_linkedin
+from app.utils.linkedin_util import upload_local_media, upload_media
 import shutil
 from pathlib import Path
 from app.config import LINKEDIN_ACCESS_TOKEN
