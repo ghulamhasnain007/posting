@@ -10,14 +10,14 @@ cloudinary.config(
     api_secret=CLOUD_API_SECRET
 )
 
-def upload_to_cloudinary(image_path: str):
+def upload_to_cloudinary(media_path: str):
     """
     Upload an image to Cloudinary and return the public URL.
     :param image_path: Local path of the image.
     :return: Publicly accessible URL of the uploaded image.
     """
     try:
-        response = cloudinary.uploader.upload(image_path)
+        response = cloudinary.uploader.upload(media_path)
         return response.get("secure_url")  # Get the secure URL from the response
     except Exception as e:
         raise ValueError(f"Error uploading to Cloudinary: {e}")

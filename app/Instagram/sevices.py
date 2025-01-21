@@ -125,15 +125,42 @@ def upload_from_computer(image_path: str, caption: str = None):
     return {"message": "Post published successfully", "post_id": post_id}
 
 
-def upload_from_url(image_url: str, caption: str = None):
+# def upload_from_url(image_url: str, caption: str = None):
+#     """
+#     Upload an image to Instagram using a direct image URL.
+#     :param image_url: Publicly accessible URL of the image.
+#     :param caption: Caption for the Instagram post.
+#     :return: Published post ID.
+#     """
+#     media_id = create_instagram_media(image_url, caption)
+#     post_id = publish_instagram_media(media_id)
+#     return {"message": "Post published successfully", "post_id": post_id}
+
+
+
+
+async def instagram_posting(media_url: str, caption: str = None, media_type: str = "IMAGE"):
     """
-    Upload an image to Instagram using a direct image URL.
-    :param image_url: Publicly accessible URL of the image.
-    :param caption: Caption for the Instagram post.
-    :return: Published post ID.
+    Endpoint to post an image or video to Instagram.
+    :param media_url: Public URL of the media.
+    :param caption: Caption for the post.
+    :param media_type: "IMAGE" or "VIDEO".
     """
-    media_id = create_instagram_media(image_url, caption)
-    post_id = publish_instagram_media(media_id)
+    media_id = await create_instagram_media(media_url, caption, media_type)
+    post_id = await publish_instagram_media(media_id)
+    return {"message": "Post published successfully", "post_id": post_id}
+
+
+async def instagram_local_posting(media_path: str, caption: str = None, media_type: str = "IMAGE"):
+    """
+    Endpoint to post an image or video to Instagram.
+    :param media_url: Public URL of the media.
+    :param caption: Caption for the post.
+    :param media_type: "IMAGE" or "VIDEO".
+    """
+    media_url = upload_to_cloudinary(media_path)
+    media_id = await create_instagram_media(media_url, caption, media_type)
+    post_id = await publish_instagram_media(media_id)
     return {"message": "Post published successfully", "post_id": post_id}
 
 # def create_instagram_media(image_url: str, caption: str = None):

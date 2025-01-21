@@ -3,10 +3,39 @@ from app.config import ACCESS_TOKEN, GRAPH_API_URL, PAGE_ID, PAGE_ACCESS_TOKEN
 
 
 
+def upload_online_image_to_facebook(image_url: str, caption: str = None):
+    """
+    Upload an image to Facebook.
+    
+    :param image_url: URL of the image to be uploaded.
+    :param caption: Caption for the image (optional).
+    :return: Response from Facebook API.
+    """
+    if not image_url:
+        raise ValueError("Image URL is required")
 
-# Handling Both Image Uploading From Computer and Image URL
+    endpoint = f"{GRAPH_API_URL}/{PAGE_ID}/photos"
+    payload = {
+        "url": image_url,
+        "caption": caption,
+        "access_token": PAGE_ACCESS_TOKEN
+    }
 
-def upload_image_to_facebook(image_url: str = None, image_path: str = None, caption: str = None):
+    try:
+        response = requests.post(endpoint, data=payload, timeout=60)
+        response_data = response.json()
+
+        if "id" not in response_data:
+            raise ValueError(f"Error uploading image: {response_data}")
+
+        return response_data  # Return the successful response data
+
+    except requests.exceptions.RequestException as e:
+        raise RuntimeError(f"Request failed: {e}")
+    
+
+
+def upload_local_image_to_facebook(image_path: str = None, caption: str = None):
     """
     Upload an image to Facebook.
     :param image_url: URL of the image to be uploaded (optional).
@@ -18,11 +47,7 @@ def upload_image_to_facebook(image_url: str = None, image_path: str = None, capt
     endpoint = f"{GRAPH_API_URL}/{PAGE_ID}/photos"
     payload = {"caption": caption, "access_token": PAGE_ACCESS_TOKEN}
 
-    files = None
-    if image_url:
-        payload["url"] = image_url
-    elif image_path:
-        files = {"source": open(image_path, "rb")}
+    files = {"source": open(image_path, "rb")}
 
     print(payload)
     response = requests.post(endpoint, data=payload, files=files)
@@ -32,35 +57,6 @@ def upload_image_to_facebook(image_url: str = None, image_path: str = None, capt
         raise ValueError(f"Error uploading image: {response_data}")
 
     return response_data
-
-
-
-
-
-#Working Correctly
-
-# def upload_image_to_facebook(image_url: str, caption: str = None):
-#     """
-#     Upload an image to Facebook Page using the Graph API.
-#     :param image_url: URL of the image to be uploaded.
-#     :param caption: Caption for the image.
-#     :return: Response from the Facebook API.
-#     """
-#     endpoint = f"{GRAPH_API_URL}/{PAGE_ID}/photos"
-#     payload = {
-#         "url": image_url,
-#         "caption": caption,
-#         "access_token": PAGE_ACCESS_TOKEN
-#     }
-#     print(payload)
-#     response = requests.post(endpoint, json=payload)
-#     response_data = response.json()
-
-#     if response.status_code != 200:
-#         print(f"Error: {response_data}")
-#         raise ValueError(f"Failed to upload image: {response_data}")
-
-#     return response_data
 
 
 
