@@ -10,7 +10,7 @@ router = APIRouter()
 #     return upload_from_computer(image_path, caption)
 
 
-@router.post("/local/instagram", tags=["Instagram"])
+@router.post("/post/local-media", tags=["Instagram"])
 async def instagram_post(media_path: str, caption: str = None, media_type: str = "IMAGE"):
     # return upload_from_computer(media_path, caption, media_type)
     return await instagram_local_posting(media_path, caption, media_type)
@@ -20,7 +20,7 @@ async def instagram_post(media_path: str, caption: str = None, media_type: str =
 #     return upload_from_url(image_url, caption)
 
 
-@router.post("/online/instagram", tags=["Instagram"])
+@router.post("/post/online-media", tags=["Instagram"])
 async def post_instagram(media_url: str, caption:str = None, media_type: str = "IMAGE"):
     return await instagram_posting(media_url, caption, media_type)
 # def instagram_post(media_url: str, caption: str = None, media_type: str = "IMAGE"):

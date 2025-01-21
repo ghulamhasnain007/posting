@@ -24,7 +24,7 @@ def auth():
 #     return post_image_to_linkedin(image_url, text)
 
 
-@router.post("/post/text", tags=["Linkedin"])
+@router.post("/organization/post/text", tags=["Linkedin"])
 def post_text_organization(text: str = Query(...)):
     org_data = get_organizations(LINKEDIN_ACCESS_TOKEN)
     author_id = org_data['elements'][0]['organizationalTarget']  # Fetch the first organization's ID
