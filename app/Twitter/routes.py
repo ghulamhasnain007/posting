@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
-from app.Twitter.services import post_tweet_text, post_tweet_with_image
+from fastapi import APIRouter, Depends, HTTPException, Request, File, UploadFile
+from app.Twitter.services import post_tweet_text, tweet_with_media, tweet_with_media_url
 import tweepy
 from app.config import TWITTER_REDIRECT_URI, TWITTER_CLIENT_ID, TWITTER_CLIENT_SECRET
 
@@ -27,9 +27,17 @@ def get_twitter_auth_url():
     return {"authorization_url": authorization_url}
 
 
-@router.post("/post/images")
-def post_image(tweet_text, image_path):
-    return post_tweet_with_image(tweet_text, image_path)
+# @router.post("/post/images", tags=["Twitter"])
+# def post_image(tweet_text, image_path):
+#     return post_tweet_with_image(tweet_text, image_path)
 
 
+@router.post("/tweet-media/", tags=["Twitter"])
+async def tweet_local_media(tweet_text: str, file: UploadFile = File(...)):
+    return await tweet_with_media(tweet_text, file) 
 
+
+# Route for URL-based media upload
+@router.post("/tweet-media-url/", tags=["Twitter"])
+async def tweet_media_url(tweet_text, media_url):
+    return await tweet_with_media_url(tweet_text, media_url)

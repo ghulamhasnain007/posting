@@ -10,12 +10,12 @@ import requests
 
 router = APIRouter()
 
-@router.get("/callback", tags=["Linkedin"])
+@router.get("/callback")
 def callback(code: str = Query(...)):
     return linkedin_callback(code)
 
 
-@router.get("/auth", tags=["Linkedin"])
+@router.get("/auth")
 def auth():
     return linkedin_auth()
 
@@ -24,7 +24,7 @@ def auth():
 #     return post_image_to_linkedin(image_url, text)
 
 
-@router.post("/organization/post/text", tags=["Linkedin"])
+@router.post("/organization/post/text")
 def post_text_organization(text: str = Query(...)):
     org_data = get_organizations(LINKEDIN_ACCESS_TOKEN)
     author_id = org_data['elements'][0]['organizationalTarget']  # Fetch the first organization's ID
@@ -36,7 +36,7 @@ def post_text_organization(text: str = Query(...)):
 
 
 
-@router.post("/profile/post/text", tags=["Linkedin"])
+@router.post("/profile/post/text")
 def post_text_profile(text: str = Query(...)):
     org_data = get_organizations(LINKEDIN_ACCESS_TOKEN)
     author_id = org_data['elements'][0]['roleAssignee']  # Fetch the first organization's ID
@@ -66,8 +66,8 @@ def post_text_profile(text: str = Query(...)):
 
 
 
-@router.post("/post/profile/media", tags=["Linkedin"])
-def post_image(image_url: str = Query(...), text: str = Query(...), media_type: str = Query("image")):
+@router.post("/post/profile/media-url", tags=["Linkedin Profile"])
+def post_media_to_profile(image_url: str = Query(...), text: str = Query(...), media_type: str = Query("image")):
 
     org_data = get_organizations(LINKEDIN_ACCESS_TOKEN)
     author_id = org_data['elements'][0]['roleAssignee']  # Fetch the first organization's ID
@@ -83,8 +83,8 @@ def post_image(image_url: str = Query(...), text: str = Query(...), media_type: 
     return post_media_to_linkedin(asset_urn, text, author_id, media_type)
 
 
-@router.post("/post/organization/media", tags=["Linkedin"])
-def post_image(image_url: str = Query(...), text: str = Query(...), media_type: str = Query("image")):
+@router.post("/post/organization/media-url", tags=["Linkedin Page"])
+def post_media_to_organization(image_url: str = Query(...), text: str = Query(...), media_type: str = Query("image")):
 
     org_data = get_organizations(LINKEDIN_ACCESS_TOKEN)
     author_id = org_data['elements'][0]['organizationalTarget']  # Fetch the first organization's ID
@@ -163,8 +163,8 @@ def post_image(image_url: str = Query(...), text: str = Query(...), media_type: 
 #     return response
 
 
-@router.post("/post/profile/local-media", tags=["Linkedin"])
-async def post_local_media(file: UploadFile = File(...), text: str = Query(...), media_type: str = Query("image")):
+@router.post("/post/profile/media", tags=["Linkedin Profile"])
+async def post_local_media_profile(file: UploadFile = File(...), text: str = Query(...), media_type: str = Query("image")):
     """Post an image or video to LinkedIn after uploading from the user's computer."""
     # Save the file temporarily
     temp_file_path = Path(f"temp_{file.filename}")
@@ -192,8 +192,8 @@ async def post_local_media(file: UploadFile = File(...), text: str = Query(...),
     return response
 
 
-@router.post("/post/organization/local-media", tags=["Linkedin"])
-async def post_local_media(file: UploadFile = File(...), text: str = Query(...), media_type: str = Query("image")):
+@router.post("/post/organization/media", tags=["Linkedin Page"])
+async def post_local_media_page(file: UploadFile = File(...), text: str = Query(...), media_type: str = Query("image")):
     """Post an image or video to LinkedIn after uploading from the user's computer."""
     # Save the file temporarily
     temp_file_path = Path(f"temp_{file.filename}")
